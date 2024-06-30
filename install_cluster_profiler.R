@@ -15,5 +15,5 @@ for (pkg in c("HDO.db_0.99.1.tar.gz",
               "gson_0.1.0.tar.gz",
               "downloader_0.4.tar.gz",
               "clusterProfiler_4.10.1.tar.gz")){
-    install.packages(file.path(path.to.install.dir, pkg), type = "source", repos = NULL)
+  install.packages(file.path(path.to.install.dir, pkg), type = "source", repos = NULL)
 }

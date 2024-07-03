@@ -1,11 +1,11 @@
-gc()
-rm(list = ls())
+# gc()
+# rm(list = ls())
 
 set.seed(411)
 #####----------------------------------------------------------------------#####
 ##### PACKAGE INSTALLATION
 #####----------------------------------------------------------------------#####
-path.to.main.src <- "/media/hieunguyen/HNSD01/src/UMP_oral_cancer/official"
+path.to.main.src <- "/media/hieunguyen/HNSD01/src/UMP_oral_cancer/official/ump_oral_cancer_project"
 
 source(file.path(path.to.main.src, "import_libraries.R"))
 source(file.path(path.to.main.src, "helper_functions.R"))
@@ -38,7 +38,7 @@ library("sva")
 #####----------------------------------------------------------------------#####
 data.version <- "20240630"
 code.version <- "v17"
-output.version <- "focus_v17_20240630"
+output.version <- "focus_v17_20240703"
 
 #####----------------------------------------------------------------------#####
 ##### INPUT ARGS

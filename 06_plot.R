@@ -1,5 +1,5 @@
-gc()
-rm(list = ls())
+# gc()
+# rm(list = ls())
 
 set.seed(411)
 #####----------------------------------------------------------------------#####
@@ -38,7 +38,7 @@ library("sva")
 #####----------------------------------------------------------------------#####
 data.version <- "20240630"
 code.version <- "v17"
-output.version <- "focus_v17_20240630"
+output.version <- "focus_v17_20240703"
 
 #####----------------------------------------------------------------------#####
 ##### INPUT ARGS
@@ -90,6 +90,8 @@ top100.up <- subset(resdf, resdf$log2FoldChange > 0) %>% arrange(desc(abs.log2Fo
 top100.down <- subset(resdf, resdf$log2FoldChange < 0) %>% arrange(desc(abs.log2FoldChange)) %>% head(25)
 top.genedf <- rbind(top100.up, top100.down)
 
+umapdf <- read.csv(file.path(path.to.01.output, "umap_RNAseq.csv"))
+sample.order <- umapdf[order(umapdf$merged.cluster13),]$SampleID
 
 full.count.matrix <- counts(dds$cluster1_vs_cluster2, normalized = TRUE)
 dds.count <- counts(dds$cluster1_vs_cluster2, normalized = TRUE)[top.genedf$Gene, sample.order]

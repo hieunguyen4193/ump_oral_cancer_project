@@ -53,10 +53,10 @@ var.method <- config.params[[code.version]][["var.method"]]
 #####----------------------------------------------------------------------#####
 ##### PATHS
 #####----------------------------------------------------------------------#####
-outdir <- "/media/hieunguyen/HNSD_mini/data/outdir"
+outdir <- "/media/hieunguyen/HNSD_mini1/data/outdir"
 PROJECT <- "UMP_oral_cancer"
 
-path.to.main.input <- "/media/hieunguyen/HNSD_mini/data/UMP_Oral_cancer/input"
+path.to.main.input <- "/media/hieunguyen/HNSD_mini1/data/UMP_Oral_cancer/input"
 path.to.main.output <- file.path(outdir, PROJECT, output.version)
 dir.create(path.to.main.output, showWarnings = FALSE, recursive = TRUE)
 
@@ -64,9 +64,9 @@ path.to.01.output <- file.path(path.to.main.output, "01_output", data.version, c
 path.to.04.output <- file.path(path.to.main.output, "04_output", data.version, code.version)
 dir.create(path.to.04.output, showWarnings = FALSE, recursive = TRUE)
 
-traindf <- readxl::read_excel(file.path(path.to.main.input, data.version, "Data for model 30.06.24.xlsx"), sheet = "RNAseq") %>%
+traindf <- readxl::read_excel(file.path(path.to.main.input, data.version, "Data for model 06.07.24.xlsx"), sheet = "RNAseq") %>%
   subset(select = -c(Group, `No.`))
-testdf <- readxl::read_excel(file.path(path.to.main.input, data.version, "Data for model 30.06.24.xlsx"), sheet = "No RNAseq")
+testdf <- readxl::read_excel(file.path(path.to.main.input, data.version, "Data for model 06.07.24.xlsx"), sheet = "No RNAseq")
 colnames(testdf) <- c("SampleID", colnames(testdf)[2:length(colnames(testdf))])
 
 # convert male and female to 1 and 2

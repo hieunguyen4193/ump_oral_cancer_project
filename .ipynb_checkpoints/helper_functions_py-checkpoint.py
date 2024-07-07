@@ -1,3 +1,39 @@
+##### general libraries import
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pickle
+import os
+
+import warnings 
+warnings.filterwarnings("ignore")
+
+from tqdm import tqdm
+
+import umap
+
+##### scikit learn import
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import GridSearchCV 
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.decomposition import PCA
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import RocCurveDisplay, auc
+from sklearn.model_selection import StratifiedKFold
+import sklearn.metrics as metrics
+from sklearn.model_selection import KFold
+import xgboost as xgb
+from helper_functions_py import *
+
+from xgboost import XGBClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB, MultinomialNB, ComplementNB, BernoulliNB, CategoricalNB
+from sklearn.svm import SVC 
+
 def generate_ROC_LOOCV(inputdf, savedir, figname):
     os.system("mkdir -p {}".format(savedir))
     fpr, tpr, threshold = metrics.roc_curve(inputdf["true_label"].to_numpy(), 
@@ -14,13 +50,13 @@ def generate_ROC_LOOCV(inputdf, savedir, figname):
     plt.ylim([0, 1])
     plt.ylabel('True Positive Rate')
     plt.xlabel('False Positive Rate')
-    plt.show()
     plt.savefig(os.path.join(savedir, "{}".format(figname)))
+    plt.show()
+    
 
 
-def generate_ROC_KFold(clf, X, y, savedir, figname):
+def generate_ROC_KFold(clf, X, y, savedir, figname, n_splits = 10):
     os.system("mkdir -p {}".format(savedir))
-    n_splits = 5
     cv = KFold(n_splits=n_splits)
     
     tprs = []
@@ -29,11 +65,11 @@ def generate_ROC_KFold(clf, X, y, savedir, figname):
     
     fig, ax = plt.subplots(figsize=(6, 6))
     for fold, (train, test) in enumerate(cv.split(X, y)):
-        clf.fit(X[train], y[train])
+        clf.fit(X[train], np.array(y)[train])
         viz = RocCurveDisplay.from_estimator(
             clf,
             X[test],
-            y[test],
+            np.array(y)[test],
             name=f"ROC fold {fold}",
             alpha=0.3,
             lw=1,
@@ -75,5 +111,5 @@ def generate_ROC_KFold(clf, X, y, savedir, figname):
         ylabel="True Positive Rate"
     )
     ax.legend(loc="lower right")
-    plt.show()
     plt.savefig(os.path.join(savedir, "{}".format(figname)))
+    plt.show()

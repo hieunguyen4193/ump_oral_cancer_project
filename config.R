@@ -40,10 +40,10 @@ configdf <- configdf %>% rowwise() %>%
 configdf$input.k <- input.k
 configdf$up.count.thres <- up.count.thres
 
-outdir <- "/media/hieunguyen/HNSD_mini/data/outdir"
+outdir <- "/media/hieunguyen/HNSD_mini1/data/outdir"
 PROJECT <- "UMP_oral_cancer"
 output.version <- "output_20240411"
-path.to.main.input <- "/media/hieunguyen/HNSD_mini/data/UMP_Oral_cancer/input"
+path.to.main.input <- "/media/hieunguyen/HNSD_mini1/data/UMP_Oral_cancer/input"
 path.to.main.output <- file.path(outdir, PROJECT, output.version)
 
 write.csv(configdf, file.path(path.to.main.output, "config.csv"))

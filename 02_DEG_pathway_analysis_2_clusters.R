@@ -274,8 +274,8 @@ for (cluster.name in all.names.2clusters){
         ggsave(plot = p, filename = sprintf("dotplot_pval_geneRatio_pathway_%s.svg", i), 
                path = file.path(path.to.02.output, "pathway_plots_ORA"), 
                device = "svg", 
-               width = 290, 
-               height = 290, units = "px")
+               width = 10, 
+               height = 10)
       } else {
         p <- ggplot() + ggtitle("No pathway to show")
       }
@@ -354,7 +354,7 @@ for (cluster.name in all.names.2clusters){
       if (nrow(output$res[[i]]) != 0){
         print(sprintf("Saving results from pathway %s", i))
         p <- ridgeplot(output$res[[i]], showCategory=15, orderBy = "NES") + ggtitle(sprintf("Top 20 pathways in gene set %s", i))    
-        ggsave(plot = p, filename = sprintf("ridge_plot_pathway_%s.svg", i), path = file.path(path.to.02.output, "pathway_plots_GSEA"), device = "svg", width = 290, height = 290, units = "px")
+        ggsave(plot = p, filename = sprintf("ridge_plot_pathway_%s.svg", i), path = file.path(path.to.02.output, "pathway_plots_GSEA"), device = "svg", width = 10, height = 10)
       } else {
         p <- ggplot() + ggtitle("No pathway to show")
       }

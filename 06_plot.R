@@ -73,7 +73,7 @@ cv.scoredf <- colMeans(cv.scoredf) %>% as.data.frame() %>%
   rownames_to_column("Model")
 colnames(cv.scoredf) <- c("Model", "Avg_Accuracy_10FoldCV")
 p <- cv.scoredf %>% ggplot(aes(x = Model, y = Avg_Accuracy_10FoldCV, fill = Model)) + geom_bar(stat = "identity") + theme_pubr()
-ggsave(plot = p, filename = "compare_model.svg", path = file.path(path.to.01.output), device = "svg", width = 14, height = 10, dpi = 300)
+ggsave(plot = p, filename = "compare_model.svg", path = file.path(path.to.06.output), device = "svg", width = 14, height = 10, dpi = 300)
 
 ##### plot heat map
 path.to.deseq.res <- file.path(path.to.main.output, "02_output", data.version, code.version, "merged.cluster13", "DESEQ2_RNAseq_data_one_vs_one.obj.rds")
@@ -97,9 +97,9 @@ full.count.matrix <- counts(dds$cluster1_vs_cluster2, normalized = TRUE)
 dds.count <- counts(dds$cluster1_vs_cluster2, normalized = TRUE)[top.genedf$Gene, sample.order]
 count.matrix.cluster1 <- full.count.matrix[, subset(colData(dds$cluster1_vs_cluster2), colData(dds$cluster1_vs_cluster2)$merged.cluster13 == 1) %>% row.names()]
 count.matrix.cluster2 <- full.count.matrix[, subset(colData(dds$cluster1_vs_cluster2), colData(dds$cluster1_vs_cluster2)$merged.cluster13 == 2) %>% row.names()]
-write.csv(full.count.matrix, file.path(path.to.01.output, "full_count_matrix_merged_cluster13.csv"))
-write.csv(count.matrix.cluster1, file.path(path.to.01.output, "count_matrix_merged_clsuter13_cluster1.csv"))
-write.csv(count.matrix.cluster2, file.path(path.to.01.output, "count_matrix_merged_clsuter13_cluster2.csv"))
+write.csv(full.count.matrix, file.path(path.to.06.output, "full_count_matrix_merged_cluster13.csv"))
+write.csv(count.matrix.cluster1, file.path(path.to.06.output, "count_matrix_merged_clsuter13_cluster1.csv"))
+write.csv(count.matrix.cluster2, file.path(path.to.06.output, "count_matrix_merged_clsuter13_cluster2.csv"))
 
 dds.count.scaled <- (dds.count - rowMeans(dds.count))/rowSds(dds.count)
 dds.count.scaled.pivot <- dds.count.scaled %>% 
@@ -116,4 +116,29 @@ p <- ggheatmap(dds.count, scale = "row", dend = "none",
                  low = "blue",
                  high = "red"))
 
-ggsave(plot = p, filename = "heatmap_DEG.svg", path = file.path(path.to.01.output), device = "svg", width = 20, height = 15, dpi = 300)
+ggsave(plot = p, filename = "heatmap_DEG.svg", path = file.path(path.to.06.output), device = "svg", width = 20, height = 15, dpi = 300)
+
+
+##### heatmap new marker genes
+new.marker.genes <- c("RESF1",
+                      "SLAIN2",
+                      "HNRNPD",
+                      "ADNP",
+                      "SLK",
+                      "WAC",
+                      "MGAT1",
+                      "BAG1",
+                      "MARCKS",
+                      "OGFR",
+                      "GIGYF1",
+                      "FKBP8")
+
+dds.count <- counts(dds$cluster1_vs_cluster2, normalized = TRUE)[new.marker.genes, sample.order]
+p <- ggheatmap(dds.count, scale = "row", dend = "none",
+               row_dend_left = FALSE, row_text_angle = 0,
+               column_text_angle = 90,
+               scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(
+                 low = "blue",
+                 high = "red"))
+
+ggsave(plot = p, filename = "heatmap_DEG.new.svg", path = file.path(path.to.06.output), device = "svg", width = 20, height = 15, dpi = 300)

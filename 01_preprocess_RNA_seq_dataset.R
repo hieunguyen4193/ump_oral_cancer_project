@@ -240,3 +240,35 @@ for (selected.cluster.label in c("RNA.consensus.cluster", "merged.cluster13")){
     ggsave(plot = p, path = file.path(path.to.01.output, selected.cluster.label), filename = output.name, device = "svg", width = 10, height = 10, dpi = 300)
   }
 }
+
+
+##### New markers genes, 12 genes
+new.marker.genes <- c("RESF1",
+                      "SLAIN2",
+                      "HNRNPD",
+                      "ADNP",
+                      "SLK",
+                      "WAC",
+                      "MGAT1",
+                      "BAG1",
+                      "MARCKS",
+                      "OGFR",
+                      "GIGYF1",
+                      "FKBP8")
+
+for (input.gene in intersect(new.marker.genes, rownames(count.matrix.be.raw))){
+  dir.create(file.path(path.to.01.output, "new_marker_genes_boxplot"), showWarnings = FALSE, recursive = TRUE)
+  tmpdf <- count.matrix.be.raw[input.gene, ] %>% as.data.frame()
+  colnames(tmpdf) <- "exprs"
+  tmpdf <- tmpdf %>% rownames_to_column("Sample") %>%
+    rowwise() %>%
+    mutate(cluster.k3 = subset(umapdf, umapdf$SampleID == Sample)$RNA.consensus.cluster) %>%
+    mutate(cluster.merge = subset(umapdf, umapdf$SampleID == Sample)$merged.cluster13)
+  tmpdf$cluster.k3 <- factor(tmpdf$cluster.k3, levels = c(1,2,3))
+  tmpdf$cluster.merge <- factor(tmpdf$cluster.merge, levels = c(1,2))
+  tmpdf %>% ggplot(aes(x = cluster.k3, y = exprs, fill = cluster.k3)) + geom_boxplot()
+  p <- tmpdf %>% ggplot(aes(x = cluster.k3, y = exprs, fill = cluster.k3)) + geom_boxplot() + geom_jitter(width = 0.02) + theme_pubr()
+  ggsave(plot = p, path = file.path(path.to.01.output, "new_marker_genes_boxplot"), filename = sprintf("Gene_%s.3clusters.svg", input.gene), device = "svg", width = 10, height = 10, dpi = 300)
+  p <- tmpdf %>% ggplot(aes(x = cluster.merge, y = exprs, fill = cluster.merge)) + geom_boxplot() + geom_jitter(width = 0.02) + theme_pubr()
+  ggsave(plot = p, path = file.path(path.to.01.output, "new_marker_genes_boxplot"), filename = sprintf("Gene_%s.merged_2_clusters.svg", input.gene), device = "svg", width = 10, height = 10, dpi = 300)
+}

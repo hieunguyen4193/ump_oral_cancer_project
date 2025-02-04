@@ -53,10 +53,10 @@ var.method <- config.params[[code.version]][["var.method"]]
 #####----------------------------------------------------------------------#####
 ##### PATHS
 #####----------------------------------------------------------------------#####
-outdir <- "/media/hieunguyen/HNSD_mini/data/outdir"
+outdir <- "/media/hieunguyen/GSHD_HN01/outdir/UMP_Oral_cancer"
 PROJECT <- "UMP_oral_cancer"
 
-path.to.main.input <- "/media/hieunguyen/HNSD_mini/data/UMP_Oral_cancer/input"
+path.to.main.input <- "/media/hieunguyen/GSHD_HN01/raw_data/UMP_Oral_cancer/input"
 path.to.main.output <- file.path(outdir, PROJECT, output.version)
 dir.create(path.to.main.output, showWarnings = FALSE, recursive = TRUE)
 

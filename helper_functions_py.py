@@ -28,7 +28,7 @@ import sklearn.metrics as metrics
 from sklearn.model_selection import KFold
 import xgboost as xgb
 from helper_functions_py import *
-
+from sklearn.metrics import f1_score
 from xgboost import XGBClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, ComplementNB, BernoulliNB, CategoricalNB
@@ -70,7 +70,7 @@ def generate_ROC_KFold(clf, X, y, savedir, figname, n_splits = 10):
             clf,
             X[test],
             np.array(y)[test],
-            name=f"ROC fold {fold}",
+            name="ROC fold {}, F1 {:.2f}".format(fold, f1_score(np.array(y)[test], clf.predict(X[test]))),
             alpha=0.3,
             lw=1,
             ax=ax,

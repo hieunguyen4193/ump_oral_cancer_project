@@ -3,7 +3,8 @@ BiocManager::install("org.Hs.eg.db", update = FALSE)
 remove.packages("clusterProfiler")
 remove.packages("DOSE")
 remove.packages("GOSemSim")
-path.to.install.dir <- "/media/hieunguyen/HNHD01/offline_pkgs/clusterProfiler"
+# path.to.install.dir <- "/media/hieunguyen/HNHD01/offline_pkgs/clusterProfiler"
+path.to.install.dir <- "/media/hieunguyen/GSHD_HN01/storage/offline_pkgs/clusterProfiler"
 BiocManager::install("fgsea", update = FALSE)
 install.packages("tidygraph")
 BiocManager::install("enrichplot", update = FALSE)

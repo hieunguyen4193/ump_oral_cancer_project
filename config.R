@@ -40,9 +40,11 @@ configdf <- configdf %>% rowwise() %>%
 configdf$input.k <- input.k
 configdf$up.count.thres <- up.count.thres
 
-outdir <- "/media/hieunguyen/GSHD_HN01/outdir/UMP_Oral_cancer"
-PROJECT <- "UMP_oral_cancer"
+# outdir <- "/media/hieunguyen/GSHD_HN01/outdir/UMP_Oral_cancer"
+outdir <- "/media/hieunguyen/GSHD_HN01/outdir"
+PROJECT <- "UMP_Oral_cancer"
 output.version <- "output_20240411"
+# path.to.main.input <- "/media/hieunguyen/GSHD_HN01/raw_data/UMP_Oral_cancer/input"
 path.to.main.input <- "/media/hieunguyen/GSHD_HN01/raw_data/UMP_Oral_cancer/input"
 path.to.main.output <- file.path(outdir, PROJECT, output.version)
 

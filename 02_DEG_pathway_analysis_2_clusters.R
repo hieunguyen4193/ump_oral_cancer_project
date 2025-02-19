@@ -8,6 +8,8 @@ set.seed(411)
 #####----------------------------------------------------------------------#####
 path.to.main.src <- "/media/hieunguyen/HNSD01/src/UMP_oral_cancer/official/ump_oral_cancer_project"
 
+cutoff.adjp <- 0.05
+
 source(file.path(path.to.main.src, "import_libraries.R"))
 source(file.path(path.to.main.src, "helper_functions.R"))
 source(file.path(path.to.main.src, "config.R"))
@@ -55,8 +57,9 @@ top_variable_genes <- config.params[[code.version]][["top_variable_genes"]]
 #####----------------------------------------------------------------------#####
 ##### PATHS
 #####----------------------------------------------------------------------#####
-outdir <- "/media/hieunguyen/HNSD_mini/data/outdir"
-PROJECT <- "UMP_oral_cancer"
+# outdir <- "/media/hieunguyen/HNSD_mini/data/outdir"
+outdir <- "/media/hieunguyen/GSHD_HN01/outdir"
+PROJECT <- "UMP_Oral_cancer"
 
 all.names.2clusters <- c("kmean.2clusters.DrNam",
                          "kmean.cluster",
@@ -64,13 +67,16 @@ all.names.2clusters <- c("kmean.2clusters.DrNam",
                          "merged.cluster13",
                          "merged.cluster23")
 
+# cluster.name <- "merged.cluster13"
+
 for (cluster.name in all.names.2clusters){
-  path.to.main.input <- "/media/hieunguyen/HNSD_mini/data/UMP_Oral_cancer/input"
+  # path.to.main.input <- "/media/hieunguyen/HNSD_mini/data/UMP_Oral_cancer/input"
+  path.to.main.input <- "/media/hieunguyen/GSHD_HN01/raw_data/UMP_Oral_cancer/input"
   path.to.main.output <- file.path(outdir, PROJECT, output.version)
   dir.create(path.to.main.output, showWarnings = FALSE, recursive = TRUE)
   
   path.to.01.output <- file.path(path.to.main.output, "01_output", data.version, code.version)
-  path.to.02.output <- file.path(path.to.main.output, "02_output", data.version, code.version, cluster.name)
+  path.to.02.output <- file.path(path.to.main.output, "02_output_20250218", data.version, code.version, cluster.name)
   dir.create(path.to.02.output, showWarnings = FALSE, recursive = TRUE)
   dir.create(file.path(path.to.02.output, "DESEQ_results"), showWarnings = FALSE, recursive = TRUE)
   
@@ -138,6 +144,36 @@ for (cluster.name in all.names.2clusters){
   for (i in names(dds.obj)){
     tmpdf <- dds.obj[[i]] %>% results() %>% as.data.frame() %>% rownames_to_column("Gene")
     all.raw.diff.genes[[i]] <- tmpdf
+    
+    ##### plot volcano plot
+    input.df <- tmpdf
+    input.df <- input.df %>% mutate(abs.log2FoldChange = abs(log2FoldChange))
+    
+    top20.up.genes <- input.df %>% arrange(desc(log2FoldChange)) %>% head(20) %>% pull(Gene)
+    top20.down.genes <- input.df %>% arrange(desc(log2FoldChange)) %>% tail(20) %>% pull(Gene)
+    
+    input.df <- input.df %>% rowwise() %>%
+      # mutate(show.gene.name = ifelse(padj < cutoff.adjp, Gene, NA)) %>%
+      mutate(show.gene.name = ifelse(Gene %in% c(top20.down.genes, top20.up.genes), Gene, NA)) %>%
+      mutate(sig = ifelse(padj < cutoff.adjp, "sig", "nonsig"))
+    
+    volcano.plot <- ggplot(data=input.df, 
+                           aes(x=log2FoldChange, y=-log10(padj), col=sig, label=show.gene.name)) + 
+      geom_point() + 
+      scale_color_manual(values=c("#c0d2f0", "#f28095")) +
+      theme_minimal() +
+      geom_vline(xintercept=c(-1, 1), col="#9a9fa6", linetype='dotted') +
+      geom_hline(yintercept=-log10(cutoff.adjp), col="#9a9fa6", linetype='dotted') +
+      geom_text_repel() +
+      theme_bw() + 
+      theme(plot.title = element_text(hjust=0.5, face="bold", size = 12)) +
+      xlim(c(-max(input.df$abs.log2FoldChange), max(input.df$abs.log2FoldChange)))
+    ggsave(plot = volcano.plot, 
+           filename = "volcano_plot.svg", 
+           path = file.path(path.to.02.output, "DESEQ_results"),
+           dpi = 300, width = 14, height = 10)
+    
+    writexl::write_xlsx(tmpdf, file.path(path.to.02.output, "DESEQ_results", sprintf("DESEQ_result_%s.raw.xlsx", i)))
     tmpdf <- tmpdf %>% subset(padj <= 0.05) %>%
       rowwise() %>%
       mutate(abs.logFC = abs(log2FoldChange)) %>%
@@ -367,4 +403,8 @@ for (cluster.name in all.names.2clusters){
   #####----------------------------------------------------------------------#####
   generate_results_from_enricher_ORA(cluster1 = 1, cluster2 = 2)
   generate_results_from_enricher_GSEA(cluster1 = 1, cluster2 = 2)
-}  
+}
+
+# input.df <- readxl::read_excel("/media/hieunguyen/GSHD_HN01/outdir/UMP_Oral_cancer/focus_v17_20240703/02_output_20250218/20240630/v17/merged.cluster23/DESEQ_results/DESEQ_result_cluster1_vs_cluster2.raw.xlsx")
+
+
